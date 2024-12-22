@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Камераны ашу және суретке түсіру</title>
+</head>
+<body>
+    <h1>Камераны ашу және суретке түсіру</h1>
+    <video id="video" autoplay playsinline style="width: 100%; max-width: 500px;"></video>
+    <button id="captureButton">Суретке түсіру</button>
+    <br><br>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <img id="snapshot" style="max-width: 500px; display: none;" alt="Сурет" />
+
+    <script>
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('captureButton');
+        const canvas = document.getElementById('canvas');
+        const snapshot = document.getElementById('snapshot');
+
+        // Камераны автоматты түрде қосу
+        window.onload = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (err) {
+                console.error('Камераға қолжетімділік жоқ немесе қате:', err);
+            }
+        };
+
+        captureButton.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            // Видеоны canvas элементіне салу
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Canvas-тан суретті алу және оны экранда көрсету
+            const imageUrl = canvas.toDataURL('image/png');
+            snapshot.src = imageUrl;
+            snapshot.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
